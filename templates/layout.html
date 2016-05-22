@@ -23,6 +23,7 @@
 
             <ul class="right hide-on-med-and-down">
                     {% if current_user.is_authenticated %}
+                        <li>Logged as {{current_user.username}}</li>
                         <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
                         <li><a href="{{ url_for('register') }}">Register</a></li>
