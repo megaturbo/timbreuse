@@ -5,6 +5,7 @@ class User(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)
     password = db.Column('password' , db.String(10))
+    current_project = db.Column('current_project', db.Integer)
     projects = db.relationship('Project', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):

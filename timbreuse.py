@@ -96,5 +96,36 @@ def new_project():
         return redirect(url_for('user', username=current_user.username))
 
 
+@app.route('/select', methods=['GET', 'POST'])
+@login_required
+def select_shit():
+    if request.method == 'POST':
+        current_project = request.form['current_project']
+        
+        projects = current_user.projects
+        
+        if current_project not in (p.id for p in projects):
+            flash('Fuck you')
+        else:
+            current_user.current_project = current_project
+            db.session.commit()
+        
+            flash('Now working on {}'.format(project))
+    return render_template('projects/selectshit.html')
+
+
+@app.route('/newshit', methods=['GET', 'POST'])
+@login_required
+def new_shit():
+    if request.method == 'POST':
+        task = request.form['newshit']
+        
+        # tasks = current_user.
+        
+        flash('Time slot added to task {} in project {}'.format(task, 'placeholder'))
+        
+    return render_template('projects/newshit.html')
+
+
 if __name__ == '__main__':
 	app.run()
