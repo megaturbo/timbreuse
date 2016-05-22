@@ -26,6 +26,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -34,6 +35,7 @@ class Project(db.Model):
 
     def __init__(self, name):
         self.name = name
+
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -45,6 +47,7 @@ class Task(db.Model):
     def __init__(self, name, description):
         self.name = name
         self.description = description
+
 
 class TimeSlot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
