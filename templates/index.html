@@ -1,19 +1,90 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
+<head>
+    <meta charset="utf-8">
 
-        <!-- MATERIALIZE CSS -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- MATERIALIZE CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        <!-- MATERIALIZE JAVASCRIPT -->
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
-        
-        <title>Timbreuse.jpg</title>
-    </head>
-    <body>
-        <h1>sup</h1>
-    </body>
+    <!-- MATERIALIZE JAVASCRIPT -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+
+    <title>Timbreuse</title>
+</head>
+
+<!-- Start BODY -->
+<body>
+
+    <!-- Start NAVBAR -->
+    <nav class="light-green lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Timbreuse.</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#"><i class="material-icons left">fingerprint</i>Login</a></li>
+            </ul>
+
+            <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
+                <li><a href="#"><i class="material-icons left">fingerprint</i></a></li>
+            </ul>
+            <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+        </div>
+    </nav>
+    <!-- End NAVBAR -->
+
+    <!-- Start CONTAINER -->
+    <div class="container">
+        {% block body %}
+        <h1>HyperYOLO</h1>
+        {% endblock %}
+    </div>
+    <!-- End CONTAINER -->
+
+    <!-- Start FOOTER -->
+    <footer class="page-footer light-green">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">SNAFU Corp.</h5>
+                    <p class="grey-text text-lighten-4">Hey. We are SNAFU Corp. It's a description of us, we just... hum... like.... do shit. So use this website at your own risk and we actually dgaf.</p>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">Us.</h5>
+                    <ul>
+                        <li><a class="white-text" href="https://github.com/roflolilolmao">Roflolilolmao</a></li>
+                        <li><a class="white-text" href="https://github.com/thomasroulin">ikonoklast</a></li>
+                    </ul>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text">What we do.</h5>
+                    <ul>
+                        <li><a class="white-text" href="#!">Nope</a></li>
+                        <li><a class="white-text" href="#!">Nop</a></li>
+                        <li><a class="white-text" href="#!">No</a></li>
+                        <li><a class="white-text" href="#!">Fuck you</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://i.imgur.com/vWkPc1m.gifv">SNAFU Corp.</a>
+            </div>
+        </div>
+    </footer>
+    <!-- End FOOTER -->
+
+</body>
+
+
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../../bin/materialize.js"></script>
+<script src="js/init.js"></script>
+
+<div class="hiddendiv common"></div><div class="drag-target" style="left: 0px; touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div></body>
+
 </html>
+
+<body>
