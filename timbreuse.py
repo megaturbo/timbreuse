@@ -112,9 +112,18 @@ def select_shit():
 @login_required
 def new_shit():
     if request.method == 'POST':
+        if current_user.current_project == None:
+            redirect(url_for('select_shit'))
+        
         task = request.form['newshit']
         
-        # tasks = current_user.
+        tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
+        if task not in (t.name for t in tasks):
+            newtask = Task(task, '')
+            project = Project.query.filter_by(id=int(current_user.current_project)).first()
+            project.tasks.append(newtask)
+            db.session.add(newtask)
+            db.session.commit()
         
         flash(u'Time slot added to task {} in project {}'.format(task, 'placeholder'))
         
