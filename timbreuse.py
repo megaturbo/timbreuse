@@ -89,7 +89,6 @@ def new_project():
         return redirect(url_for('index'))
 
 
-
 @app.route('/select', methods=['GET', 'POST'])
 @login_required
 def select_shit():
@@ -98,13 +97,14 @@ def select_shit():
         
         projects = current_user.projects
         
-        if current_project not in (p.id for p in projects):
+        if int(current_project) not in (int(p.id) for p in projects):
             flash('Fuck you')
         else:
             current_user.current_project = current_project
             db.session.commit()
         
-            flash('Now working on {}'.format(project))
+            project = Project.query.filter_by(id=current_project).first().name
+            flash(u'Now working on {}'.format(project))
     return render_template('projects/selectshit.html')
 
 
@@ -116,7 +116,7 @@ def new_shit():
         
         # tasks = current_user.
         
-        flash('Time slot added to task {} in project {}'.format(task, 'placeholder'))
+        flash(u'Time slot added to task {} in project {}'.format(task, 'placeholder'))
         
     return render_template('projects/newshit.html')
 
