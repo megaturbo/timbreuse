@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    <h3>Hey {{ user.username }}</h3>
+    <hr />
+    {{ rofl }}
+    {% for project in projects %}
+        {{project.name}}
+    {% endfor %}
+    <a href="{{ url_for('new_project') }}" class="waves-effect waves-light btn">Create a new project</a>
+{% endblock %}
