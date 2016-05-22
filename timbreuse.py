@@ -89,6 +89,11 @@ def new_project():
         return redirect(url_for('index'))
 
 
+@app.route('/project/<project_id>')
+@login_required
+def project(project_id):
+    project = Project.query.filter_by(id=project_id, user_id=current_user.id).first_or_404()
+    return render_template('projects/show.html', project=project)
 
 if __name__ == '__main__':
 	app.run()
