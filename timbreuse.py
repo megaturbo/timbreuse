@@ -26,7 +26,10 @@ def load_user(id):
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+    if current_user.is_authenticated:
+        return render_template('home.html')
+    else:
+        return render_template('index.html')
 
 
 # ============================================================
@@ -47,14 +50,14 @@ def register():
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    
+
     username = request.form['username']
     password = request.form['password']
-    
+
     remember_me = False
     if 'remember_me' in request.form:
         remember_me = True
-    
+
     registered_user = User.query.filter_by(username=username, password=password).first()
     if registered_user is None:
         flash('Username or Password is invalid' , 'error')
@@ -71,29 +74,20 @@ def logout():
 
 
 # ============================================================
-#                       User shit
-# ============================================================
-@app.route('/users/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    projects = user.projects
-    if request.method == 'GET':
-        return render_template('users/index.html', user=user, projects=projects)
-
-
-# ============================================================
 #                       Project shit
 # ============================================================
 @app.route('/new', methods=['GET', 'POST'])
+@login_required
 def new_project():
     if request.method == 'GET':
         return render_template('projects/new.html')
     elif request.method == 'POST':
-        project = Project(request.form['name'])
+        project = Project(request.form['project_name'])
         current_user.projects.append(project)
         db.session.add(project)
         db.session.commit()
-        return redirect(url_for('user', username=current_user.username))
+        return redirect(url_for('index'))
+
 
 
 @app.route('/select', methods=['GET', 'POST'])
