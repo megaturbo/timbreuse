@@ -28,7 +28,9 @@ def load_user(id):
 def index():
 	return render_template('index.html')
 
-
+# ============================================================
+#                       Authentication shit
+# ============================================================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -38,7 +40,7 @@ def register():
     db.session.commit()
     flash('User successfully registered')
     return redirect(url_for('login'))
-            
+
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -64,6 +66,31 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+# ============================================================
+#                       User shit
+# ============================================================
+@app.route('/users/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    projects = user.projects
+    if request.method == 'GET':
+        return render_template('users/index.html', user=user, projects=projects)
+
+
+
+# ============================================================
+#                       Project shit
+# ============================================================
+@app.route('/new', methods=['GET', 'POST'])
+def new_project():
+    if request.method == 'GET':
+        return render_template('projects/new.html')
+    elif request.method == 'POST':
+        project = Project(request.form['name'])
+        current_user.projects.append(project)
+        db.session.add(project)
+        db.session.commit()
+        return redirect(url_for('user', username=current_user.username))
 
 if __name__ == '__main__':
 	app.run()
