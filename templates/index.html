@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h1>Fuck you.</h1>
+<h1>Fuck you
+    {% if current_user.is_authenticated %}
+        {{ current_user.username }}
+    {% endif %}
+</h1>
+
 {% endblock %}

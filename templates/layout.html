@@ -21,7 +21,8 @@
     <nav class="light-green lighten-1" role="navigation">
         <div class="nav-wrapper container"><a id="logo-container" href="{{ url_for('index') }}" class="brand-logo">Timbreuse.</a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="{{ url_for('login') }}"><i class="material-icons left">fingerprint</i>Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
             </ul>
 
             <ul id="nav-mobile" class="side-nav" style="transform: translateX(-100%);">
@@ -31,6 +32,16 @@
         </div>
     </nav>
     <!-- End NAVBAR -->
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
 
     <!-- Start CONTAINER -->
     <div class="container">

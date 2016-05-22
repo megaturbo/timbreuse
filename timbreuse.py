@@ -38,13 +38,13 @@ def register():
     db.session.commit()
     flash('User successfully registered')
     return redirect(url_for('login'))
-
+            
 
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
- 
+
     username = request.form['username']
     password = request.form['password']
     remember_me = False
@@ -62,7 +62,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index')) 
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
