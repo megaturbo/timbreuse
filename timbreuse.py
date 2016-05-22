@@ -28,6 +28,7 @@ def load_user(id):
 def index():
 	return render_template('index.html')
 
+
 # ============================================================
 #                       Authentication shit
 # ============================================================
@@ -68,6 +69,7 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
 # ============================================================
 #                       User shit
 # ============================================================
@@ -77,7 +79,6 @@ def user(username):
     projects = user.projects
     if request.method == 'GET':
         return render_template('users/index.html', user=user, projects=projects)
-
 
 
 # ============================================================
@@ -93,6 +94,7 @@ def new_project():
         db.session.add(project)
         db.session.commit()
         return redirect(url_for('user', username=current_user.username))
+
 
 if __name__ == '__main__':
 	app.run()
