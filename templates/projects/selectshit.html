@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>What project are you working on right now?</h2>
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="current_project" name="current_project" class="input-xlarge"
+            placeholder="What you do" value="{{ request.form.current_project }}"
+            required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Select project</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

@@ -95,5 +95,38 @@ def project(project_id):
     project = Project.query.filter_by(id=project_id, user_id=current_user.id).first_or_404()
     return render_template('projects/show.html', project=project)
 
+
+@app.route('/select', methods=['GET', 'POST'])
+@login_required
+def select_shit():
+    if request.method == 'POST':
+        current_project = request.form['current_project']
+
+        projects = current_user.projects
+
+        if int(current_project) not in (int(p.id) for p in projects):
+            flash('Fuck you')
+        else:
+            current_user.current_project = current_project
+            db.session.commit()
+
+            project = Project.query.filter_by(id=current_project).first().name
+            flash(u'Now working on {}'.format(project))
+    return render_template('projects/selectshit.html')
+
+
+@app.route('/newshit', methods=['GET', 'POST'])
+@login_required
+def new_shit():
+    if request.method == 'POST':
+        task = request.form['newshit']
+
+        # tasks = current_user.
+
+        flash(u'Time slot added to task {} in project {}'.format(task, 'placeholder'))
+
+    return render_template('projects/newshit.html')
+
+
 if __name__ == '__main__':
 	app.run()
