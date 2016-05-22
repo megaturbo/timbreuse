@@ -40,11 +40,11 @@ def register():
     return redirect(url_for('login'))
 
 
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    return redirect(url_for('index'))
+# @app.route('/login',methods=['GET','POST'])
+# def login():
+    # if request.method == 'GET':
+        # return render_template('login.html')
+    # return redirect(url_for('index'))
 
 
 @app.route('/login',methods=['GET','POST'])
