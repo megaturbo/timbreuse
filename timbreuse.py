@@ -7,6 +7,8 @@ from flask.ext.login import LoginManager
 from flask import Flask, session, request, flash, url_for, redirect, render_template, abort, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
+import datetime
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -97,7 +99,7 @@ def project(project_id):
     return render_template('projects/show.html', project=project)
 
 
-@app.route('/select', methods=['POST'])
+@app.route('/select', methods=['PUT'])
 @login_required
 def select_shit():
     current_project = request.form['current_project']
@@ -120,19 +122,29 @@ def select_shit():
 @login_required
 def new_shit():
     if request.method == 'POST':
-        if current_user.current_project == None:
-            redirect(url_for('select_shit'))
+        if current_user.current_project is None:
+            flash('Please activate a project')
+            return redirect(url_for('index'))
 
-        task = request.form['newshit']
+        taskname = request.form['newshit']
 
-        tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
-        if task not in (t.name for t in tasks):
-            newtask = Task(task, '')
+        task = Task.query.filter_by(project_id=int(current_user.current_project)).filter_by(name=taskname).first()
+        # task = next((x for x in tasks if x.name == taskname), None)
+        if task is None:
+            task = Task(taskname, '')
             project = Project.query.filter_by(id=int(current_user.current_project)).first()
-            project.tasks.append(newtask)
-            db.session.add(newtask)
-            db.session.commit()
-        flash(u'Time slot added to task {} in project {}'.format(task, 'placeholder'))
+            project.tasks.append(task)
+            db.session.add(task)
+            flash(u'Added task {} to project {}'.format(taskname, project.name))
+            
+        lasttime = TimeSlot.query.filter_by(ended_at=None).first()
+        if lasttime is not None:
+            lasttime.ended_at = datetime.datetime.now()
+            flash(u'Previous time slot ended')
+        now = TimeSlot('', datetime.datetime.now())
+        task.timeslots.append(now)
+        db.session.commit()
+        flash(u'Time slot added to task {}'.format(task.name))
 
     return render_template('projects/newshit.html')
 
