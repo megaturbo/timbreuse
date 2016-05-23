@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
     <h3>Fuck you {{ current_user.username }}</h3>
-    
+
     <div class="divider"></div>
-    
+
     {% if current_timeslot %}
         <h5>Edit comment on current Time Slot</h5>
         <br>
@@ -26,28 +26,31 @@
         <p>Task is {{ current_task }}.</p>
     {% endif %}
     <p>We'll manage the rest for you.</p>
-    <form action="{{ url_for('new_shit') }}" method=post class="form-horizontal">
-        <div class="control-group">
-            <div class="controls">
-              <input type="text" id="newshit" name="newshit" class="input-xlarge"
-                placeholder="Task" value="{{ request.form.task }}"
-                required>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-              <input type="text" id="comment" name="comment" class="input-xlarge"
-                placeholder="Comment" value="{{ request.form.comment }}">
-            </div>
-        </div>
 
-        <div class="control-group">
-            <div class="controls">
-              <button type="submit" class="btn btn-success">Add time slot</button>
+    <div class="row">
+        <form action="{{ url_for('new_shit') }}" method=post class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <select name="select_task">
+                        {% for task in tasks %}
+                        <option value="{{task.id}}">{{task.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Chose a task</label>
+                </div>
             </div>
-        </div>
-    </form>
-    
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="comment" name="comment" class="input-xlarge" placeholder="Comment" value="{{ request.form.comment }}">
+                    <label for="comment">Make a comment about what you are doing</label>
+                </div>
+            </div>
+            <div class="row">
+                  <button type="submit" class="btn btn-success">Add time slot</button>
+            </div>
+        </form>
+    </div>
+
     <br>
     <div class="divider"></div>
 
