@@ -144,7 +144,7 @@ def new_shit():
         db.session.commit()
         flash(u'Time slot added to task {}'.format(task.name))
 
-    return render_template('projects/newshit.html')
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
