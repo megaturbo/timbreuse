@@ -134,7 +134,7 @@ def new_task():
         return render_template('tasks/new.html')
     elif request.method == 'POST':
         task = Task(request.form['task_name'], request.form['task_comment'])
-        project = Project.query.filter_by(id=int(current_user.current_project)).first()
+        project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
         project.tasks.append(task)
         db.session.add(task)
         db.session.commit()
