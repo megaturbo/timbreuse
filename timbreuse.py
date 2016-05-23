@@ -91,6 +91,9 @@ def new_project():
     if request.method == 'GET':
         return render_template('projects/new.html')
     elif request.method == 'POST':
+        if len(request.form['project_name']) > 50:
+            flash('The name for your project is too long. 50 chars max.')
+            return redirect(request.referrer)
         project = Project(request.form['project_name'])
         current_user.projects.append(project)
         db.session.add(project)
@@ -140,6 +143,9 @@ def new_task():
     if request.method == 'GET':
         return render_template('tasks/new.html')
     elif request.method == 'POST':
+        if len(request.form['task_name']) > 50:
+            flash('The name for your task is too long. 50 chars max.')
+            return redirect(request.referrer)
         task = Task(request.form['task_name'], request.form['task_comment'])
         project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
         project.tasks.append(task)
