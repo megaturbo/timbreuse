@@ -34,7 +34,7 @@ def index():
             tasks = Task.query.filter_by(project_id=int(current_project)).all()
         current_timeslot = TimeSlot.query.filter_by(ended_at=None).first()
         if current_timeslot is not None:
-            workingon = Task.query.filter_by(id=current_timeslot.task_id).first().name
+            current_task = Task.query.filter_by(id=current_timeslot.task_id).first().name
         return render_template('home.html', **locals())
     else:
         return render_template('index.html')
@@ -124,33 +124,32 @@ def select_shit():
     return redirect(url_for('project', project_id=current_user.current_project_id))
 
 
-@app.route('/newshit', methods=['GET', 'POST'])
+@app.route('/newshit', methods=['POST'])
 @login_required
 def new_shit():
-    if request.method == 'POST':
-        if current_user.current_project_id is None:
-            flash('Please activate a project')
-            return redirect(url_for('index'))
+    if current_user.current_project_id is None:
+        flash('Please activate a project')
+        return redirect(url_for('index'))
 
-        taskname = request.form['newshit']
+    taskname = request.form['newshit']
 
-        task = Task.query.filter_by(project_id=int(current_user.current_project_id)).filter_by(name=taskname).first()
-        if task is None:
-            task = Task(taskname, '')
-            project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
-            project.tasks.append(task)
-            db.session.add(task)
-            flash(u'Added task {} to project {}'.format(taskname, project.name))
-            
-        lasttime = TimeSlot.query.filter_by(ended_at=None).first()
-        if lasttime is not None:
-            lasttime.ended_at = datetime.datetime.now()
-            flash(u'Previous time slot ended')
+    task = Task.query.filter_by(project_id=int(current_user.current_project_id)).filter_by(name=taskname).first()
+    if task is None:
+        task = Task(taskname, '')
+        project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
+        project.tasks.append(task)
+        db.session.add(task)
+        flash(u'Added task {} to project {}'.format(taskname, project.name))
         
-        now = TimeSlot(request.form['comment'], datetime.datetime.now())
-        task.timeslots.append(now)
-        db.session.commit()
-        flash(u'Time slot added to task {}'.format(task.name))
+    lasttime = TimeSlot.query.filter_by(ended_at=None).first()
+    if lasttime is not None:
+        lasttime.ended_at = datetime.datetime.now()
+        flash(u'Previous time slot ended')
+    
+    now = TimeSlot(request.form['comment'], datetime.datetime.now())
+    task.timeslots.append(now)
+    db.session.commit()
+    flash(u'Time slot added to task {}'.format(task.name))
 
     return redirect(url_for('index'))
     
