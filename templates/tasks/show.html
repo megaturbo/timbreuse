@@ -4,6 +4,7 @@
     <h3>Task: {{task.name}}</h3>
     <p>Project: {{project.name}}</p>
     <p>Author: {{current_user.username}}</p>
+    <p>Description: {{task.description}}</p>
 </div>
 <div class="divider"></div>
 <div class="section">
@@ -19,10 +20,24 @@
                     current
                 {% endif %}
             </div>
-            <div class="col s8">
-                <pre>{{timeslot.comment}}</pre>
+            <div class="input-field col s6">
+                <textarea name="comment" id="text{{timeslot.id}}" class="materialize-textarea"
+                          form="form{{timeslot.id}}">{{timeslot.comment}}</textarea>
+                <label for="text{{timeslot.id}}">Comment {{timeslot.id}}</label>
+            </div>
+            <div class="col s2">
+                <form action="{{ url_for('edit_timeslot_comment', timeslot_id=timeslot.id) }}"
+                      method=post class="form-horizontal" id="form{{timeslot.id}}">
+                    <div class="control-group">
+                        <div class="controls">
+                          <button type="submit" class="btn btn-success">Edit comment</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
+        <br>
+        <div class="divider"></div>
     {% endfor %}
 </div>
 {% endblock %}

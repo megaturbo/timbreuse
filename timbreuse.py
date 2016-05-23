@@ -183,11 +183,20 @@ def new_shit():
     return redirect(url_for('index'))
 
 
-@app.route('/edittimeslotcomment', methods=['POST'])
+@app.route('/edittimeslotcomment/<timeslot_id>', methods=['POST'])
 @login_required
-def edit_timeslot_comment():
-    current_timeslot = TimeSlot.query.filter_by(ended_at=None).first()
-    current_timeslot.comment = request.form['comment']
+def edit_timeslot_comment(timeslot_id):
+    timeslot = TimeSlot.query.filter_by(id=timeslot_id).first_or_404()
+    timeslots = []
+    for p in current_user.projects:
+        for t in p.tasks:
+            timeslots[len(timeslots):] = [int(x.id) for x in t.timeslots]
+    if int(timeslot_id) not in timeslots:
+        flash('GTFO you hacker')
+        logout_user()
+        return redirect(url_for('index'))
+    
+    timeslot.comment = request.form['comment']
     db.session.commit()
     flash('Updated comment')
 
