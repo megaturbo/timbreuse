@@ -96,23 +96,23 @@ def project(project_id):
     return render_template('projects/show.html', project=project)
 
 
-@app.route('/select', methods=['GET', 'POST'])
+@app.route('/select', methods=['POST'])
 @login_required
 def select_shit():
-    if request.method == 'POST':
-        current_project = request.form['current_project']
+    current_project = request.form['current_project']
+    projects = current_user.projects
 
-        projects = current_user.projects
+    # cuz maybe user edited the html in the hidden input value
+    # so we still check values, yo
+    if int(current_project) not in (int(p.id) for p in projects):
+        flash('Don\'t fuck with us')
+    else:
+        current_user.current_project = current_project
+        db.session.commit()
 
-        if int(current_project) not in (int(p.id) for p in projects):
-            flash('Fuck you')
-        else:
-            current_user.current_project = current_project
-            db.session.commit()
-
-            project = Project.query.filter_by(id=current_project).first().name
-            flash(u'Now working on {}'.format(project))
-    return render_template('projects/selectshit.html')
+        project = Project.query.filter_by(id=current_project).first().name
+        flash(u'Now working on {}'.format(project))
+    return redirect(url_for('project', project_id=current_user.current_project))
 
 
 @app.route('/newshit', methods=['GET', 'POST'])
@@ -121,9 +121,9 @@ def new_shit():
     if request.method == 'POST':
         if current_user.current_project == None:
             redirect(url_for('select_shit'))
-        
+
         task = request.form['newshit']
-        
+
         tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
         if task not in (t.name for t in tasks):
             newtask = Task(task, '')
