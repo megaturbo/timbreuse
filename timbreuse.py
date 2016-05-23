@@ -103,6 +103,11 @@ def new_project():
 def project(project_id):
     project = Project.query.filter_by(id=project_id, user_id=current_user.id).first_or_404()
     tasks = Task.query.filter_by(project_id=project.id).all()
+    timeslots = []
+    for t in tasks:
+        timeslots[len(timeslots):] = [x for x in t.timeslots]
+    timeslots = sorted(timeslots, key=lambda x: x.started_at)
+    timeslots = [(t, Task.query.filter_by(id=int(t.task_id)).first()) for t in timeslots]
     return render_template('projects/show.html', **locals())
 
 
@@ -202,6 +207,7 @@ def edit_timeslot_comment(timeslot_id):
     flash('Updated comment')
 
     return redirect(url_for('index'))
+
 
 @app.route('/endtimeslot', methods=['POST'])
 @login_required
