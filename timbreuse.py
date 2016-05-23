@@ -29,10 +29,11 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        current_project = current_user.current_project_id
-        if current_project is not None:
-            tasks = Task.query.filter_by(project_id=int(current_project)).all()
-        current_timeslot = TimeSlot.query.filter_by(ended_at=None).first()
+        current_project_id = current_user.current_project_id
+        current_project = Project.query.filter_by(id=current_project_id).first()
+        if current_project_id is not None:
+            tasks = Task.query.filter_by(project_id=int(current_project_id)).all()
+        current_timeslot = active_timeslot()
         if current_timeslot is not None:
             current_task = Task.query.filter_by(id=current_timeslot.task_id).first().name
         return render_template('home.html', **locals())
@@ -201,6 +202,36 @@ def edit_timeslot_comment(timeslot_id):
     flash('Updated comment')
 
     return redirect(url_for('index'))
+
+@app.route('/endtimeslot', methods=['POST'])
+@login_required
+def end_timeslot():
+    current_timeslot = active_timeslot()
+    if current_timeslot is None:
+        return redirect(url_for('index'))
+    current_timeslot.ended_at = datetime.datetime.now()
+    db.session.commit()
+    flash('Timeslot ended')
+
+    return redirect(url_for('index'))
+
+
+# ============================================================
+#                       Task shit
+# ============================================================
+def active_timeslot():
+    current_timeslots = TimeSlot.query.filter_by(ended_at=None).all()
+    timeslots = []
+    for p in current_user.projects:
+        for t in p.tasks:
+            timeslots[len(timeslots):] = [int(x.id) for x in t.timeslots]
+    
+    for t in current_timeslots:
+        for u in timeslots:
+            if int(t.id) == u:
+                return t
+    else:
+        return None
 
 
 if __name__ == '__main__':

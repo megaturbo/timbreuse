@@ -4,22 +4,31 @@
 
     <div class="divider"></div>
 
-    {% if current_timeslot %}
-        <p>Current time slot is on task {{ current_task }}.</p>
-        <h5>Edit comment on current Time Slot</h5>
-        <br>
-        <div class="input-field col s12">
-            <textarea name="comment" id="textareacomment" class="materialize-textarea" form="commentform">{{ current_timeslot.comment }}</textarea>
-            <label for="textareacomment">Comment</label>
+    <div class="row">
+        <div class="col s12 m6 card-panel light-green lighten-2">
+            <h5>Active project</h5>
+            <p>You are currently working on: <strong>{{current_project.name}}</strong></p>
         </div>
-        <form action="{{ url_for('edit_timeslot_comment', timeslot_id=current_timeslot.id) }}"
-              method=post class="form-horizontal" id="commentform">
-            <div class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn btn-success">Edit comment</button>
-                </div>
+        {% if current_timeslot %}
+        <div class="col s12 m6">
+            <h5>Active task: <strong>{{current_timeslot.task.name}}</strong></h5>
+            <div class="input-field col s12">
+                <textarea name="comment" id="textareacomment" class="materialize-textarea" form="commentform">{{ current_timeslot.comment }}</textarea>
+                <label for="textareacomment">Comment</label>
             </div>
-        </form>
+            <div class="row">
+                <form action="{{ url_for('edit_timeslot_comment', timeslot_id=current_timeslot.id) }}"
+                      method=POST class="form-horizontal" id="commentform" style="display:inline;">
+                    <button type="submit" class="btn btn-success">Edit comment</button>
+                </form>
+                <form action="{{ url_for('end_timeslot') }}" method=POST style="display:inline;">
+                    <button type="submit" class="btn red darken-4">Job done</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% if current_timeslot %}
         <br>
         <div class="divider"></div>
     {% endif %}
@@ -52,34 +61,35 @@
     <br>
     <div class="divider"></div>
 
-    <div class="section">
-        <h5>Tasks on current project</h5>
-        <div class="collection">
-        {% if tasks %}
-            {% for task in tasks %}
-            <a href="/task/{{task.id}}" class="collection-item">
-                {{ task.name }}
-            </a>
+    <!-- Start Current project tasks and Projects -->
+    <div class="row">
+        <div class="col s12 m6">
+            <h5>Tasks on current project</h5>
+            <div class="collection">
+            {% if tasks %}
+                {% for task in tasks %}
+                <a href="/task/{{task.id}}" class="collection-item">
+                    {{ task.name }}
+                </a>
+                {% endfor %}
+            {% endif %}
+            </div>
+            <a href="{{ url_for('new_task') }}" class="waves-effect waves-light btn">Create a new task</a>
+        </div>
+        <div class="col s12 m6">
+            <h5>Your projects</h5>
+            <div class="collection">
+            {% for project in current_user.projects %}
+                <a href="/project/{{project.id}}" class="collection-item">
+                    {% if project.id == current_user.current_project_id %}
+                        <span class="badge">active</span>
+                    {% endif %}
+                    {{project.name}}
+                </a>
             {% endfor %}
-        {% endif %}
+            </div>
+            <a href="{{ url_for('new_project') }}" class="waves-effect waves-light btn">Create a new project</a>
         </div>
-        <a href="{{ url_for('new_task') }}" class="waves-effect waves-light btn">Create a new task</a>
     </div>
-
-    <div class="divider"></div>
-
-    <div class="section">
-        <h5>Your projects</h5>
-        <div class="collection">
-        {% for project in current_user.projects %}
-            <a href="/project/{{project.id}}" class="collection-item">
-                {% if project.id == current_user.current_project_id %}
-                    <span class="badge">active</span>
-                {% endif %}
-                {{project.name}}
-            </a>
-        {% endfor %}
-        </div>
-        <a href="{{ url_for('new_project') }}" class="waves-effect waves-light btn">Create a new project</a>
-    </div>
+    <!-- End Currend project tasks and Projects -->
 {% endblock %}
