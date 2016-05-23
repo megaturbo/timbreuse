@@ -217,7 +217,7 @@ def end_timeslot():
 
 
 # ============================================================
-#                       Task shit
+#                       random
 # ============================================================
 def active_timeslot():
     current_timeslots = TimeSlot.query.filter_by(ended_at=None).all()
