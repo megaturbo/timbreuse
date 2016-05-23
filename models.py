@@ -5,7 +5,7 @@ class User(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)
     password = db.Column('password' , db.String(10))
-    current_project = db.Column('current_project', db.Integer)
+    current_project_id = db.Column('current_project_id', db.Integer)
     projects = db.relationship('Project', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):
@@ -32,6 +32,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    current_task_id = db.Column('current_task_id', db.Integer)
     tasks = db.relationship('Task', backref='project', lazy='dynamic')
 
     def __init__(self, name):

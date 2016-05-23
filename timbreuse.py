@@ -29,11 +29,13 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
-        lasttime = TimeSlot.query.filter_by(ended_at=None).first()
-        if lasttime is not None:
-            workingon = Task.query.filter_by(id=lasttime.task_id).first().name
-        return render_template('home.html', tasks=tasks, workingon=workingon)
+        current_project = current_user.current_project_id
+        if current_project is not None:
+            tasks = Task.query.filter_by(project_id=int(current_project)).all()
+        current_timeslot = TimeSlot.query.filter_by(ended_at=None).first()
+        if current_timeslot is not None:
+            workingon = Task.query.filter_by(id=current_timeslot.task_id).first().name
+        return render_template('home.html', **locals())
     else:
         return render_template('index.html')
 
@@ -114,28 +116,28 @@ def select_shit():
     if int(current_project) not in (int(p.id) for p in projects):
         flash('Don\'t fuck with us')
     else:
-        current_user.current_project = current_project
+        current_user.current_project_id = current_project
         db.session.commit()
 
         project = Project.query.filter_by(id=current_project).first().name
         flash(u'Now working on {}'.format(project))
-    return redirect(url_for('project', project_id=current_user.current_project))
+    return redirect(url_for('project', project_id=current_user.current_project_id))
 
 
 @app.route('/newshit', methods=['GET', 'POST'])
 @login_required
 def new_shit():
     if request.method == 'POST':
-        if current_user.current_project is None:
+        if current_user.current_project_id is None:
             flash('Please activate a project')
             return redirect(url_for('index'))
 
         taskname = request.form['newshit']
 
-        task = Task.query.filter_by(project_id=int(current_user.current_project)).filter_by(name=taskname).first()
+        task = Task.query.filter_by(project_id=int(current_user.current_project_id)).filter_by(name=taskname).first()
         if task is None:
             task = Task(taskname, '')
-            project = Project.query.filter_by(id=int(current_user.current_project)).first()
+            project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
             project.tasks.append(task)
             db.session.add(task)
             flash(u'Added task {} to project {}'.format(taskname, project.name))
@@ -150,6 +152,17 @@ def new_shit():
         db.session.commit()
         flash(u'Time slot added to task {}'.format(task.name))
 
+    return redirect(url_for('index'))
+    
+
+@app.route('/edittimeslotcomment', methods=['POST'])
+@login_required
+def edit_timeslot_comment():
+    current_timeslot = TimeSlot.query.filter_by(ended_at=None).first()
+    current_timeslot.comment = request.form['comment']
+    db.session.commit()
+    flash('Updated comment')
+    
     return redirect(url_for('index'))
 
 

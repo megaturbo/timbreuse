@@ -3,8 +3,26 @@
     <h3>Fuck you {{ current_user.username }}</h3>
     
     <div class="divider"></div>
+    
+    {% if current_timeslot %}
+        <h5>Edit comment on current Time Slot</h5>
+        <br>
+        <div class="input-field col s12">
+            <textarea name="comment" id="textareacomment" class="materialize-textarea" form="commentform">{{ current_timeslot.comment }}</textarea>
+            <label for="textareacomment">Comment</label>
+        </div>
+        <form action="{{ url_for('edit_timeslot_comment') }}" method=post class="form-horizontal" id="commentform">
+            <div class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn btn-success">Edit comment</button>
+                </div>
+            </div>
+        </form>
+    {% endif %}
     <h5>Add a time slot on current task</h5>
-    <p>Task is {{workingon}}.</p>
+    {% if workingon %}
+        <p>Task is {{ workingon }}.</p>
+    {% endif %}
     <p>We'll manage the rest for you.</p>
     <form action="{{ url_for('new_shit') }}" method=post class="form-horizontal">
         <div class="control-group">
@@ -34,9 +52,11 @@
 
     <div class="section">
         <h5>Tasks on current project</h5>
-        {% for task in tasks %}
-            <p>{{task.name}}</p>
-        {% endfor %}
+        {% if tasks %}
+            {% for task in tasks %}
+                <p>{{task.name}}</p>
+            {% endfor %}
+        {% endif %}
     </div>
 
     <div class="divider"></div>
