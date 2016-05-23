@@ -5,10 +5,16 @@
     <div class="divider"></div>
 
     <div class="row">
+        {% if current_project %}
         <div class="col s12 m6 card-panel light-green lighten-2">
             <h5>Active project</h5>
             <p>You are currently working on: <strong>{{current_project.name}}</strong></p>
         </div>
+        {% else %}
+        <div class="col s12 m6 card-panel light-red lighten-2">
+            <h5>Create or activate a project</h5>
+        </div>
+        {% endif %}
         {% if current_timeslot %}
         <div class="col s12 m6">
             <h5>Active task: <strong>{{current_timeslot.task.name}}</strong></h5>
@@ -32,7 +38,7 @@
         <br>
         <div class="divider"></div>
     {% endif %}
-    
+
     <h5>Add a time slot on current task</h5>
     <div class="row">
         <form action="{{ url_for('new_shit') }}" method=post class="col s12">
