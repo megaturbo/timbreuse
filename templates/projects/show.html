@@ -8,7 +8,7 @@
     {% if current_user.current_project == project.id %}
     <a class="btn disabled">Active project</a>
     {% else %}
-    <form action="{{ url_for('select_shit') }}" method=put>
+    <form action="{{ url_for('select_shit') }}" method=post>
         <input type="hidden" id="current_project" name="current_project" value="{{ project.id }}">
         <button type="submit" class="btn">Make it active</button>
     </form>

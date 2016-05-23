@@ -4,12 +4,20 @@
     
     <div class="divider"></div>
     <h5>Add a time slot on current task</h5>
+    <p>Task is {{workingon}}.</p>
     <p>We'll manage the rest for you.</p>
-    <form action="newshit" method=post class="form-horizontal">
+    <form action="{{ url_for('new_shit') }}" method=post class="form-horizontal">
         <div class="control-group">
             <div class="controls">
               <input type="text" id="newshit" name="newshit" class="input-xlarge"
-                placeholder="What you do" value="{{ request.form.task }}"
+                placeholder="Task" value="{{ request.form.task }}"
+                required>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+              <input type="text" id="comment" name="comment" class="input-xlarge"
+                placeholder="Comment" value="{{ request.form.comment }}"
                 required>
             </div>
         </div>

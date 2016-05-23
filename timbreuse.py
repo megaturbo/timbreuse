@@ -30,7 +30,10 @@ def load_user(id):
 def index():
     if current_user.is_authenticated:
         tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
-        return render_template('home.html', tasks=tasks)
+        lasttime = TimeSlot.query.filter_by(ended_at=None).first()
+        if lasttime is not None:
+            workingon = Task.query.filter_by(id=lasttime.task_id).first().name
+        return render_template('home.html', tasks=tasks, workingon=workingon)
     else:
         return render_template('index.html')
 
@@ -100,7 +103,7 @@ def project(project_id):
     return render_template('projects/show.html', **locals())
 
 
-@app.route('/select', methods=['PUT'])
+@app.route('/select', methods=['POST'])
 @login_required
 def select_shit():
     current_project = request.form['current_project']
@@ -141,7 +144,8 @@ def new_shit():
         if lasttime is not None:
             lasttime.ended_at = datetime.datetime.now()
             flash(u'Previous time slot ended')
-        now = TimeSlot('', datetime.datetime.now())
+        
+        now = TimeSlot(request.form['comment'], datetime.datetime.now())
         task.timeslots.append(now)
         db.session.commit()
         flash(u'Time slot added to task {}'.format(task.name))
