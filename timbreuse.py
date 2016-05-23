@@ -161,28 +161,27 @@ def new_shit():
         flash('Please activate a project')
         return redirect(url_for('index'))
 
-    taskname = request.form['newshit']
-
-    task = Task.query.filter_by(project_id=int(current_user.current_project_id)).filter_by(name=taskname).first()
+    task_id = request.form['select_task']
+    task = Task.query.filter_by(project_id=int(current_user.current_project_id)).filter_by(id=task_id).first()
     if task is None:
         task = Task(taskname, '')
         project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
         project.tasks.append(task)
         db.session.add(task)
         flash(u'Added task {} to project {}'.format(taskname, project.name))
-        
+
     lasttime = TimeSlot.query.filter_by(ended_at=None).first()
     if lasttime is not None:
         lasttime.ended_at = datetime.datetime.now()
         flash(u'Previous time slot ended')
-    
+
     now = TimeSlot(request.form['comment'], datetime.datetime.now())
     task.timeslots.append(now)
     db.session.commit()
     flash(u'Time slot added to task {}'.format(task.name))
 
     return redirect(url_for('index'))
-    
+
 
 @app.route('/edittimeslotcomment', methods=['POST'])
 @login_required
@@ -191,7 +190,7 @@ def edit_timeslot_comment():
     current_timeslot.comment = request.form['comment']
     db.session.commit()
     flash('Updated comment')
-    
+
     return redirect(url_for('index'))
 
 
