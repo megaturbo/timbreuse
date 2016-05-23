@@ -121,12 +121,13 @@ def select_shit():
     # so we still check values, yo
     if int(current_project) not in (int(p.id) for p in projects):
         flash('Don\'t fuck with us')
-    else:
-        current_user.current_project_id = current_project
-        db.session.commit()
+        return redirect(request.referrer)
+    
+    current_user.current_project_id = current_project
+    db.session.commit()
 
-        project = Project.query.filter_by(id=current_project).first().name
-        flash(u'Now working on {}'.format(project))
+    project = Project.query.filter_by(id=current_project).first().name
+    flash(u'Now working on {}'.format(project))
     return end_timeslot()
 
 
