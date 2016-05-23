@@ -27,7 +27,8 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        return render_template('home.html')
+        current_project = Project.query.filter_by(id=current_user.current_project)
+        return render_template('home.html', current_project=current_project)
     else:
         return render_template('index.html')
 
