@@ -1,7 +1,27 @@
 {% extends "layout.html" %}
-
 {% block body %}
     <h3>Fuck you {{ current_user.username }}</h3>
+    
+    <div class="divider"></div>
+    <h5>What are you working on right now?</h5>
+    <p>We'll manage the rest for you.</p>
+    <form action="" method=post class="form-horizontal">
+        <div class="control-group">
+            <div class="controls">
+              <input type="text" id="newshit" name="newshit" class="input-xlarge"
+                placeholder="What you do" value="{{ request.form.task }}"
+                required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+              <button type="submit" class="btn btn-success">Add time slot</button>
+            </div>
+        </div>
+    </form>
+    
+    <br>
     <div class="divider"></div>
     <h5>Your projects</h5>
     <div class="collection">

@@ -128,7 +128,6 @@ def new_shit():
         taskname = request.form['newshit']
 
         task = Task.query.filter_by(project_id=int(current_user.current_project)).filter_by(name=taskname).first()
-        # task = next((x for x in tasks if x.name == taskname), None)
         if task is None:
             task = Task(taskname, '')
             project = Project.query.filter_by(id=int(current_user.current_project)).first()
