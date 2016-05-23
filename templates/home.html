@@ -27,8 +27,8 @@
 
     <div class="section">
         <h5>What are you doing ?</h5>
-        {% for task in current_project.tasks %}
-            <p>task.name</p>
+        {% for task in tasks %}
+            <p>{{task.name}}</p>
         {% endfor %}
     </div>
 
