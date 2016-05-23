@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Create a new task</h2>
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="task_name" name="task_name" class="input-xlarge" placeholder="Task name" required>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="task_comment" name="task_comment" class="input-xlarge" placeholder="Task comment">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Create</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

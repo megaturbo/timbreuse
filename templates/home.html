@@ -53,11 +53,16 @@
 
     <div class="section">
         <h5>Tasks on current project</h5>
+        <div class="collection">
         {% if tasks %}
             {% for task in tasks %}
-                <p>{{task.name}}</p>
+            <a href="/task/{{task.id}}" class="collection-item">
+                {{ task.name }}
+            </a>
             {% endfor %}
         {% endif %}
+        </div>
+        <a href="{{ url_for('new_task') }}" class="waves-effect waves-light btn">Create a new task</a>
     </div>
 
     <div class="divider"></div>

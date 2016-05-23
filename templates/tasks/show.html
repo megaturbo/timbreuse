@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="section">
+    <h3>Task: {{task.name}}</h3>
+    <p>Project: {{project.name}}</p>
+    <p>Author: {{current_user.username}}</p>
+</div>
+<div class="divider"></div>
+<div class="section">
+    <h5>Time slots</h5>
+    {% for timeslot in timeslots %}
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col s4">
+                {{timeslot.started_at}} - 
+                {% if timeslot.ended_at %}
+                    {{timeslot.ended_at}}
+                {% else %}
+                    current
+                {% endif %}
+            </div>
+            <div class="col s8">
+                <pre>{{timeslot.comment}}</pre>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

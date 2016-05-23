@@ -124,6 +124,36 @@ def select_shit():
     return redirect(url_for('project', project_id=current_user.current_project_id))
 
 
+# ============================================================
+#                       Task shit
+# ============================================================
+@app.route('/newtask', methods=['GET', 'POST'])
+@login_required
+def new_task():
+    if request.method == 'GET':
+        return render_template('tasks/new.html')
+    elif request.method == 'POST':
+        task = Task(request.form['task_name'], request.form['task_comment'])
+        project = Project.query.filter_by(id=int(current_user.current_project)).first()
+        project.tasks.append(task)
+        db.session.add(task)
+        db.session.commit()
+        return redirect(url_for('index'))
+
+
+@app.route('/task/<task_id>')
+@login_required
+def show_task(task_id):
+    task = Task.query.filter_by(id=task_id).first_or_404()
+    project = Project.query.filter_by(id=task.project_id).first()
+    if project.user_id != current_user.id:
+        flash('You fucker won\'t spy')
+        logout_user()
+        return redirect(url_for('index'))
+    timeslots = TimeSlot.query.filter_by(task_id=task.id).all()
+    return render_template('tasks/show.html', **locals())
+
+
 @app.route('/newshit', methods=['POST'])
 @login_required
 def new_shit():
