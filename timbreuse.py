@@ -48,6 +48,9 @@ def index():
 def register():
     if request.method == 'GET':
         return render_template('register.html')
+    if request.form['username'] in (u.username for u in User.query.all()):
+        flash('username invalid')
+        return redirect(request.referrer)
     user = User(request.form['username'], request.form['password'])
     db.session.add(user)
     db.session.commit()
@@ -67,8 +70,8 @@ def login():
     if 'remember_me' in request.form:
         remember_me = True
 
-    registered_user = User.query.filter_by(username=username, password=password).first()
-    if registered_user is None:
+    registered_user = User.query.filter_by(username=username).first()
+    if registered_user is None or not registered_user.check_password(password):
         flash('Username or Password is invalid' , 'error')
         return redirect(url_for('login'))
     login_user(registered_user, remember=remember_me)

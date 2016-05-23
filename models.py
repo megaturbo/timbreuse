@@ -1,16 +1,25 @@
 from timbreuse import db
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
 
 
 class User(db.Model):
     id = db.Column(db.Integer , primary_key=True)
     username = db.Column('username', db.String(20), unique=True , index=True)
-    password = db.Column('password' , db.String(10))
+    pw_hash = db.Column('pw_hash' , db.String(66))
     current_project_id = db.Column('current_project_id', db.Integer)
     projects = db.relationship('Project', backref='user', lazy='dynamic')
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.set_password(password)
+
+    def set_password(self, password):
+        self.pw_hash = generate_password_hash(password)
+        print(self.pw_hash)
+
+    def check_password(self, password):
+        return check_password_hash(self.pw_hash, password)
 
     def is_authenticated(self):
         return True
