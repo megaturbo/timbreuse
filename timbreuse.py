@@ -127,7 +127,7 @@ def select_shit():
 
         project = Project.query.filter_by(id=current_project).first().name
         flash(u'Now working on {}'.format(project))
-    return redirect(url_for('project', project_id=current_user.current_project_id))
+    return end_timeslot()
 
 
 # ============================================================
@@ -186,7 +186,26 @@ def new_shit():
     db.session.commit()
     flash(u'Time slot added to task {}'.format(task.name))
 
-    return redirect(url_for('index'))
+    return redirect(request.referrer)
+
+
+@app.route('/edittaskcomment/<task_id>', methods=['POST'])
+@login_required
+def edit_task_comment(task_id):
+    task = Task.query.filter_by(id=task_id).first_or_404()
+    tasks = []
+    for p in current_user.projects:
+        tasks[len(tasks):] = [int(t.id) for t in p.tasks]
+    if int(task_id) not in tasks:
+        flash('I don\'t like you')
+        logout_user()
+        return redirect(url_for('index'))
+    
+    task.description = request.form['description']
+    db.session.commit()
+    flash('Updated description')
+
+    return redirect(request.referrer)
 
 
 @app.route('/edittimeslotcomment/<timeslot_id>', methods=['POST'])
@@ -206,7 +225,7 @@ def edit_timeslot_comment(timeslot_id):
     db.session.commit()
     flash('Updated comment')
 
-    return redirect(url_for('index'))
+    return redirect(request.referrer)
 
 
 @app.route('/endtimeslot', methods=['POST'])
