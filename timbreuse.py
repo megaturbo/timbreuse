@@ -29,7 +29,7 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-        tasks = Task.query.filter_by(project_id=int(current_user.current_project))
+        tasks = Task.query.filter_by(project_id=int(current_user.current_project)).all()
         return render_template('home.html', tasks=tasks)
     else:
         return render_template('index.html')
@@ -96,7 +96,8 @@ def new_project():
 @login_required
 def project(project_id):
     project = Project.query.filter_by(id=project_id, user_id=current_user.id).first_or_404()
-    return render_template('projects/show.html', project=project)
+    tasks = Task.query.filter_by(project_id=project.id).all()
+    return render_template('projects/show.html', **locals())
 
 
 @app.route('/select', methods=['PUT'])

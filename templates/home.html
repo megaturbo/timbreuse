@@ -3,7 +3,7 @@
     <h3>Fuck you {{ current_user.username }}</h3>
     
     <div class="divider"></div>
-    <h5>What are you working on right now?</h5>
+    <h5>Add a time slot on current task</h5>
     <p>We'll manage the rest for you.</p>
     <form action="newshit" method=post class="form-horizontal">
         <div class="control-group">
@@ -26,7 +26,7 @@
     <div class="divider"></div>
 
     <div class="section">
-        <h5>What are you doing ?</h5>
+        <h5>Tasks on current project</h5>
         {% for task in tasks %}
             <p>{{task.name}}</p>
         {% endfor %}

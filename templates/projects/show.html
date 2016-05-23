@@ -17,5 +17,8 @@
 <div class="divider"></div>
 <div class="section">
     <h5>Tasks</h5>
+    {% for task in tasks %}
+        <p>{{task.name}}</p>
+    {% endfor %}
 </div>
 {% endblock %}
