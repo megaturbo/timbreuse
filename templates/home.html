@@ -22,17 +22,31 @@
     </form>
     
     <br>
+
     <div class="divider"></div>
-    <h5>Your projects</h5>
-    <div class="collection">
-    {% for project in current_user.projects %}
-        <a href="/project/{{project.id}}" class="collection-item">
-            {% if project.id == current_user.current_project %}
-            <span class="badge">active</span>
-            {% endif %}
-            {{project.name}}
-        </a>
-    {% endfor %}
+
+    <div class="section">
+        <h5>What are you doing ?</h5>
+        {% for task in current_project.tasks %}
+            <p>task.name</p>
+        {% endfor %}
     </div>
-    <a href="{{ url_for('new_project') }}" class="waves-effect waves-light btn">Create a new project</a>
+
+    <br>
+    <div class="divider"></div>
+
+    <div class="section">
+        <h5>Your projects</h5>
+        <div class="collection">
+        {% for project in current_user.projects %}
+            <a href="/project/{{project.id}}" class="collection-item">
+                {% if project.id == current_user.current_project %}
+                <span class="badge">active</span>
+                {% endif %}
+                {{project.name}}
+            </a>
+        {% endfor %}
+        </div>
+        <a href="{{ url_for('new_project') }}" class="waves-effect waves-light btn">Create a new project</a>
+    </div>
 {% endblock %}
