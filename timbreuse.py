@@ -48,6 +48,9 @@ def index():
 def register():
     if request.method == 'GET':
         return render_template('register.html')
+    if request.form['username'] in (u.username for u in User.query.all()):
+        flash('username invalid')
+        return redirect(request.referrer)
     user = User(request.form['username'], request.form['password'])
     db.session.add(user)
     db.session.commit()
@@ -67,8 +70,8 @@ def login():
     if 'remember_me' in request.form:
         remember_me = True
 
-    registered_user = User.query.filter_by(username=username, password=password).first()
-    if registered_user is None:
+    registered_user = User.query.filter_by(username=username).first()
+    if registered_user is None or not registered_user.check_password(password):
         flash('Username or Password is invalid' , 'error')
         return redirect(url_for('login'))
     login_user(registered_user, remember=remember_me)
@@ -91,6 +94,9 @@ def new_project():
     if request.method == 'GET':
         return render_template('projects/new.html')
     elif request.method == 'POST':
+        if len(request.form['project_name']) > 50:
+            flash('The name for your project is too long. 50 chars max.')
+            return redirect(request.referrer)
         project = Project(request.form['project_name'])
         current_user.projects.append(project)
         db.session.add(project)
@@ -121,13 +127,14 @@ def select_shit():
     # so we still check values, yo
     if int(current_project) not in (int(p.id) for p in projects):
         flash('Don\'t fuck with us')
-    else:
-        current_user.current_project_id = current_project
-        db.session.commit()
+        return redirect(request.referrer)
+    
+    current_user.current_project_id = current_project
+    db.session.commit()
 
-        project = Project.query.filter_by(id=current_project).first().name
-        flash(u'Now working on {}'.format(project))
-    return redirect(url_for('project', project_id=current_user.current_project_id))
+    project = Project.query.filter_by(id=current_project).first().name
+    flash(u'Now working on {}'.format(project))
+    return end_timeslot()
 
 
 # ============================================================
@@ -139,6 +146,9 @@ def new_task():
     if request.method == 'GET':
         return render_template('tasks/new.html')
     elif request.method == 'POST':
+        if len(request.form['task_name']) > 50:
+            flash('The name for your task is too long. 50 chars max.')
+            return redirect(request.referrer)
         task = Task(request.form['task_name'], request.form['task_comment'])
         project = Project.query.filter_by(id=int(current_user.current_project_id)).first()
         project.tasks.append(task)
@@ -186,7 +196,26 @@ def new_shit():
     db.session.commit()
     flash(u'Time slot added to task {}'.format(task.name))
 
-    return redirect(url_for('index'))
+    return redirect(request.referrer)
+
+
+@app.route('/edittaskcomment/<task_id>', methods=['POST'])
+@login_required
+def edit_task_comment(task_id):
+    task = Task.query.filter_by(id=task_id).first_or_404()
+    tasks = []
+    for p in current_user.projects:
+        tasks[len(tasks):] = [int(t.id) for t in p.tasks]
+    if int(task_id) not in tasks:
+        flash('I don\'t like you')
+        logout_user()
+        return redirect(url_for('index'))
+    
+    task.description = request.form['description']
+    db.session.commit()
+    flash('Updated description')
+
+    return redirect(request.referrer)
 
 
 @app.route('/edittimeslotcomment/<timeslot_id>', methods=['POST'])
@@ -206,7 +235,7 @@ def edit_timeslot_comment(timeslot_id):
     db.session.commit()
     flash('Updated comment')
 
-    return redirect(url_for('index'))
+    return redirect(request.referrer)
 
 
 @app.route('/endtimeslot', methods=['POST'])
